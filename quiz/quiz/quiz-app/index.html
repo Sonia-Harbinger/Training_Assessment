@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="welcome" class="container">
+        <h1>Welcome to the Quiz!</h1>
+        <p>You will be answering 5 coding-related questions.</p>
+        <button id="start-quiz">Attempt Now</button>
+    </div>
+
+    <div id="quiz" class="container" style="display: none;">
+        <div id="timer">Time Left: <span id="time">10:00</span></div>
+        <div id="progress-bar">
+            <div id="progress" style="width: 0%;"></div>
+        </div>
+        <div id="question-container">
+            <h2 id="question"></h2>
+            <div id="options" class="options"></div>
+        </div>
+        <button id="next-button">Next</button>
+        <button id="submit-button" style="display: none;">Submit</button>
+    </div>
+
+    <div id="result-page" class="container" style="display: none;">
+        <h2>You have completed 5/5 questions.</h2>
+        <p>Time Spent: <span id="time-spent">00:00</span></p>
+        <p>Score: <span id="score">0</span></p>
+        <button id="check-answers">Check Your Answers</button>
+        <button id="try-again">Try Again</button>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
