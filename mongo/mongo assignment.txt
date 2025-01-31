@@ -1,0 +1,498 @@
+ans 1)   db.irons.find({
+  brand: { $in: ["Philips", "Tefal"] },
+  price: { $lte: 30 },
+  "description.color": "red/white",
+  "technically.power": { $gte: 2000 },
+  extras: { $all: ["cord storage space", "spray function"] }
+});
+
+
+ans 2) db.irons.find({
+  "description.color": { $ne: "red/white" },
+  "technically.weight": { $lt: 2 },
+  $expr: { $gte: [{ $size: "$reviews.plus" }, 2] },
+  "measures.height": { $lte: 20 },
+  extras: { $nin: ["cord storage space"] }
+}).sort({ price: -1 }).limit(1);
+
+
+
+ans 3) db.irons.updateMany(
+  {},
+  { $mul: { price: 1.10 } }
+);
+
+
+ans 4) db.irons.updateMany(
+  { brand: "Philips" },
+  { $mul: { price: 0.85 } } // 15% discount
+);
+
+db.irons.updateMany(
+  { brand: "Tefal" },
+  { $mul: { price: 0.80 } } // 20% discount
+);
+
+
+
+
+
+
+
+Q.2>
+ans 1) db.laptops.find({
+  $or: [
+    { price: { $gte: 500, $lte: 1000 } },
+    { "properties.HD": "750GB" }
+  ]
+})
+
+
+
+
+ans 2)   db.laptops.updateMany(
+  { "properties.OS": "Windows 10" },
+  { $set: { "properties.OS": "Windows 8" } }
+)
+
+output : {
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
+
+
+
+ans 3) 
+db.laptops.find(
+  {},
+  { name: 1, price: 1, "properties.OS": 1 }
+).sort({ price: 1 }).limit(2)
+
+
+
+output:
+{
+  _id: ObjectId('6799f2c9008aa1a57747cb35'),
+  name: 'HP Pavilion 17-g101nd',
+  price: 534,
+  properties: {
+    OS: 'Windows 8'
+  }
+
+
+{
+  _id: ObjectId('6799f2bf008aa1a57747cb34'),
+  name: 'Acer Aspire F5-573G-57GD',
+  price: 749,
+  properties: {
+    OS: 'Windows 8'
+  }
+}
+
+
+
+ans 4) db.laptops.find({
+  reviews: {
+    $elemMatch: { score: { $gte: 4, $lte: 4.2 } }
+  }
+})
+
+
+
+output:   {
+  _id: ObjectId('6799f2bf008aa1a57747cb34'),
+  name: 'Acer Aspire F5-573G-57GD',
+  price: 749,
+  properties: {
+    processor: 'Intel Core i5',
+    RAM: '8GB',
+    HD: '650GB',
+    OS: 'Windows 8',
+    USB: {
+      USB2_0: 0,
+      USB3_0: 2,
+      USB3_1: 1
+    }
+  },
+
+
+LanguageOS: [
+    'Dutch',
+    'French',
+    'English'
+  ],
+  reviews: [
+    {
+      by: 'Aline',
+      score: 4,
+      text: 'Very well'
+    },
+    {
+      by: 'Me',
+      score: 3.5,
+      text: 'Compact'
+    }
+  ]
+}
+
+
+
+
+ans 5) 
+
+db.laptops.find({
+  "properties.USB.USB3_0": 2,
+  LanguageOS: { $elemMatch: { $eq: "Dutch" } },
+  $where: "this.LanguageOS.length >= 2"
+})
+
+output: {
+  _id: ObjectId('6799f2bf008aa1a57747cb34'),
+  name: 'Acer Aspire F5-573G-57GD',
+  price: 749,
+  properties: {
+    processor: 'Intel Core i5',
+    RAM: '8GB',
+    HD: '650GB',
+    OS: 'Windows 8',
+    USB: {
+      USB2_0: 0,
+      USB3_0: 2,
+      USB3_1: 1
+    }
+  },
+
+{
+  _id: ObjectId('6799f2bf008aa1a57747cb34'),
+  name: 'Acer Aspire F5-573G-57GD',
+  price: 749,
+  properties: {
+    processor: 'Intel Core i5',
+    RAM: '8GB',
+    HD: '650GB',
+    OS: 'Windows 8',
+    USB: {
+      USB2_0: 0,
+      USB3_0: 2,
+      USB3_1: 1
+    }
+  },
+
+
+
+
+
+
+
+
+MOVIES :
+
+
+
+1)   How do you do an 'equal to' query? Just match the value for the queried key ?
+
+ans ) db.comedy.find({year: 2012})
+
+2)  Find all movies released in the year 2013?
+
+ans) db.comedy.find({ year: 2013 })
+  
+
+output: {
+  _id: ObjectId('6799f5edfdec72cdf55be184'),
+  name: "We're the Millers",
+  year: 2013,
+  tagline: 'If anyone asks',
+  cast: [
+    'Jennifer Aniston',
+    'Luis GuzmÃ¡n',
+    'Ed Helms',
+    'Kathryn Hahn'
+  ],
+  technical: {
+    runningTime: 110,
+    language: 'English'
+  },
+  merits: {
+    budget: 37,
+    boxOffice: 270
+  },
+  comments: [
+    {
+      by: 'Taylor',
+      text: 'First class movie!'
+    },
+    {
+      by: 'Rob',
+      text: 'I like it'
+    }
+  ]
+}
+
+3) Find all movies from the year 2011 until now ?
+
+ans) 
+
+    db.comedy.find({ year: { $gte: 2011 } })
+
+
+output:
+
+{
+  _id: ObjectId('6799f5d9fdec72cdf55be183'),
+  name: 'Ted',
+  year: 2012,
+  tagline: 'Ted is coming',
+  cast: [
+    'Mark Walhlberg',
+    'Mila Kunis',
+    'Seth MacFarlane'
+  ],
+  technical: {
+    runningTime: 106,
+    language: 'English',
+    prizes: 13,
+    nominations: 27
+  },
+  sequel: 'Ted 2',
+  merits: {
+    budget: 50,
+    boxOffice: 535
+  },
+  comments: [
+    {
+      by: 'Steve',
+      text: 'Loved the movie'
+    },
+    {
+      by: 'Dave',
+      text: 'Really funny!'
+    }
+  ]
+}
+{
+  _id: ObjectId('6799f5edfdec72cdf55be184'),
+  name: "We're the Millers",
+  year: 2013,
+  tagline: 'If anyone asks',
+  cast: [
+    'Jennifer Aniston',
+    'Luis GuzmÃ¡n',
+    'Ed Helms',
+    'Kathryn Hahn'
+  ],
+  technical: {
+    runningTime: 110,
+    language: 'English'
+  },
+  merits: {
+    budget: 37,
+    boxOffice: 270
+  },
+  comments: [
+    {
+      by: 'Taylor',
+      text: 'First class movie!'
+    },
+    {
+      by: 'Rob',
+      text: 'I like it'
+    }
+  ]
+}
+
+  _id: ObjectId('6799f698fdec72cdf55be187'),
+  name: 'The Hangover Part II',
+  year: 2011,
+  tagline: 'Bangkok has them now',
+  cast: [
+    'Bradley Cooper',
+    'Ed Helms',
+    'Zach Galifianakis'
+  ],
+  technical: {
+    runningTime: 102,
+    language: 'English'
+  },
+  sequel: 'The Hangover Part III',
+  merits: {
+    budget: 80,
+    boxOffice: 581
+  },
+  comments: [
+    {
+      by: 'Anne',
+      text: 'Liked the first part better'
+    },
+    {
+      by: 'Robin',
+      text: 'Over the top'
+    }
+  ]
+}
+
+4)   Find all movies with a budget over 50 million dollar?
+
+ans) db.comedy.find({ 'merits.budget': { $gt: 50 } })
+
+
+5) Find all movies of which the runningTime is longer than 105 minutes ?
+
+ans) db.comedy.find({ 'technical.runningTime': { $gt: 105 } })
+
+6) Find all movies of which the language is English?
+
+ans) db.comedy.find({ 'technical.language': 'English' })
+
+
+7) Find all movies with runningTime between 100 and 110 ?
+
+ans) db.comedy.find({ 'technical.runningTime': { $gte: 100, $lte: 110 } })
+
+
+8) What if you want to get only some particular field in the result? 
+ Give name and boxOffice of all movies with boxOffice over 500 million dollar ?
+
+ans)
+ db.comedy.find(
+  { 'merits.boxOffice': { $gt: 500 } },
+  { name: 1, 'merits.boxOffice': 1 }
+)
+
+9) Give name and boxOffice of all movies with boxOffice over 500. Get rid of _id(/* A quoted number is a string, and is not the same as the actual number */
+/* is totally different from */
+
+/* Use $ne for "not equals" */
+
+/* The $in operator is analogous to the SQL IN modifier, 
+allowing you to specify an array of possible matches. */)
+ 
+
+ans) 
+db.comedy.find(
+  { 'merits.boxOffice': { $gt: 500 } },
+  { name: 1, 'merits.boxOffice': 1, _id: 0 }
+)
+
+
+
+10) Find all comedies with a budget of 50, 60, 70 or 80 ?
+
+/* The $nin operator is similar to $in except that it selects objects for which 
+the specified field does not have any value in the specified array. */
+
+
+
+ans)  db.comedy.find({ 'merits.budget': { $in: [50, 60, 70, 80] } })
+
+11) Find all comedies that have a runningTime other than 100 or 105 ?
+
+ans) db.comedy.find({ 'technical.runningTime': { $nin: [100, 105] } })
+
+
+12) Find all comedies with the name Ted or The Hangover from the year 2012 ?
+ans) db.comedy.find({
+  $or: [
+    { name: 'Ted', year: 2012 },
+    { name: 'The Hangover', year: 2012 }
+  ]
+})
+
+13) Find all comedies with a boxOffice over 500 from the year 2010 or 2011?
+
+ans)
+db.comedy.find({
+  $or: [
+    { year: 2010 },
+    { year: 2011 }
+  ],
+  'merits.boxOffice': { $gt: 500 }
+})
+
+
+14) Find all comedies except for Ted or The Hangover ?
+
+ans) db.comedy.find({
+  name: { $nin: ['Ted', 'The Hangover'] }
+})
+
+15) Find all comedies not released in the years 2010 or 2011 ?
+
+ans)
+db.comedy.find({
+  $and: [
+    { 'merits.boxOffice': { $gt: 500 } },
+    { 'merits.budget': { $lte: 50 } }
+  ]
+})
+
+
+16) Find all movies for which the boxOffice exceeded over 500 million dollar and the budget was lower than or equal to 50 million dollar ?
+
+ans) db.comedy.find({
+  $and: [
+    { 'merits.boxOffice': { $gt: 500 } },
+    { 'merits.budget': { $lte: 50 } }
+  ]
+})
+
+
+17) Find all movies that have comments by Rob or Alex ?
+
+ans) db.comedy.find({
+  comments: { $elemMatch: { by: { $in: ['Rob', 'Alex'] } } }
+})
+
+
+18) Find all movies with 4 actors ?
+ans)db.comedy.find({ cast: { $size: 4 } })
+
+19) Find all movies for which the comments contain the word love ?
+ans) db.comedy.find({ 'comments.text': /love/i })
+
+20) Find all movies for which the comments do not contain the word like ?
+
+ans)db.comedy.find({ 'comments.text': { $not: /like/i } })
+
+
+21) Find all comedies that were not released in 2012 ?
+ans)db.comedy.find({ year: { $ne: 2012 } })
+
+22) Find all comedies that were released in 2011 or later with Ed Helms as part of the cast ?
+ans) db.comedy.find({
+  year: { $gte: 2011 },
+  cast: 'Ed Helms'
+})
+
+23) Find all movies that were commented by Steve and have a budget of 50 million dollar or more ?
+ans) db.comedy.find({
+  comments: { $elemMatch: { by: 'Steve' } },
+  'merits.budget': { $gte: 50 }
+})
+
+24) Find all movies with 3 comments or more ?
+ans) db.comedy.find({
+  comments: { $size: { $gte: 3 } }
+})
+
+25) Find all movies commented by Anne and Robin ?
+ans) db.comedy.find({
+  comments: { $all: [{ by: 'Anne' }, { by: 'Robin' }] }
+})
+
+26) Find all movies that have a sequel ?
+
+ans)db.comedy.find({ sequel: { $exists: true } })
+
+27) Find all movies that have a sequel of the Hangover ?
+
+ans)  db.comedy.find({ sequel: 'The Hangover' })
+
+28) Find all movies which have a field prizes and which won more than 10 prizes ?
+
+ans) db.comedy.find({
+  'technical.prizes': { $exists: true, $gt: 10 }
+})
