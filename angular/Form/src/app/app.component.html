@@ -1,0 +1,23 @@
+<app-reg-form (formSubmitted)="handleFormSubmit($event)"></app-reg-form>
+
+<div *ngIf="submittedData">
+  <h2>Submitted Data</h2>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Date of Birth</th>
+      <th>Gender</th>
+      <th>Department</th>
+    </tr>
+    <tr>
+      <td>{{ submittedData.name }}</td>
+      <td>{{ submittedData.email }}</td>
+      <td>{{ submittedData.phone }}</td>
+      <td>{{ submittedData.dob }}</td>
+      <td>{{ submittedData.gender }}</td>
+      <td>{{ submittedData.department }}</td>
+    </tr>
+  </table>
+</div>
